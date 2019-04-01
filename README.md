@@ -1,6 +1,8 @@
 # DISCLAIMER
 This contains prototype code that hasn't been properly audited for security. Do not deploy this to mainnet and insert tokens with real value.
 
+---
+
 * Website: [uniswap.io/](https://uniswap.io/)
 * Docs: [docs.uniswap.io/](https://docs.uniswap.io/)
 * Twitter: [@UniswapExchange](https://twitter.com/UniswapExchange)
