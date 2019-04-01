@@ -7,6 +7,7 @@ DEADLINE = 1742680400 # deadline = w3.eth.getBlock(w3.eth.blockNumber).timestamp
 ETH_RESERVE = 5*10**18
 HAY_RESERVE = 10*10**18
 DEN_RESERVE = 20*10**18
+YUT_RESERVE = 10*10**18
 # ETH to ERC20 swap input
 ETH_SOLD = 1*10**18
 MIN_HAY_BOUGHT = 1

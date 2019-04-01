@@ -11,7 +11,7 @@ def test_factory(w3, exchange_template, HAY_token, factory, pad_bytes32, exchang
     assert factory.exchangeTemplate() == exchange_template.address
     assert factory.getExchange(HAY_token.address) == None
     # Create Exchange for UNI Token
-    factory.createExchange(HAY_token.address, transact={})
+    factory.createExchange(HAY_token.address, 30, 100, transact={})
     HAY_exchange_address = factory.getExchange(HAY_token.address)
     assert HAY_exchange_address != None
     HAY_exchange = ConciseContract(w3.eth.contract(address=HAY_exchange_address, abi=exchange_abi))
@@ -20,7 +20,7 @@ def test_factory(w3, exchange_template, HAY_token, factory, pad_bytes32, exchang
     assert factory.getTokenWithId(1) == HAY_token.address
     # Exchange already exists
     with raises(TransactionFailed):
-        factory.createExchange(HAY_token.address)
+        factory.createExchange(HAY_token.address, 30, 100)
     # Can't call setup on exchange
     assert_fail(lambda: HAY_exchange.setup(factory.address))
     # Exchange initial state

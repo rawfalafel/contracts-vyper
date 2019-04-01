@@ -1,5 +1,5 @@
 contract Exchange():
-    def setup(token_addr: address): modifying
+    def setup(token_addr: address, fee_basis_points: uint256, kfactor_value: uint256): modifying
 
 NewExchange: event({token: indexed(address), exchange: indexed(address)})
 
@@ -16,12 +16,12 @@ def initializeFactory(template: address):
     self.exchangeTemplate = template
 
 @public
-def createExchange(token: address) -> address:
+def createExchange(token: address, fee_basis_points: uint256, kfactor_value: uint256) -> address:
     assert token != ZERO_ADDRESS
     assert self.exchangeTemplate != ZERO_ADDRESS
     assert self.token_to_exchange[token] == ZERO_ADDRESS
     exchange: address = create_with_code_of(self.exchangeTemplate)
-    Exchange(exchange).setup(token)
+    Exchange(exchange).setup(token, fee_basis_points, kfactor_value)
     self.token_to_exchange[token] = exchange
     self.exchange_to_token[exchange] = token
     token_id: uint256 = self.tokenCount + 1

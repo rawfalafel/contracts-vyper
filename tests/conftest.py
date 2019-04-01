@@ -13,6 +13,7 @@ from tests.constants import (
     ETH_RESERVE,
     HAY_RESERVE,
     DEN_RESERVE,
+    YUT_RESERVE,
     DEADLINE,
 )
 
@@ -101,7 +102,7 @@ def exchange_abi():
 
 @pytest.fixture
 def HAY_exchange(w3, exchange_abi, factory, HAY_token):
-    factory.createExchange(HAY_token.address, transact={})
+    factory.createExchange(HAY_token.address, 30, 100, transact={})
     exchange_address = factory.getExchange(HAY_token.address)
     exchange = ConciseContract(w3.eth.contract(
         address=exchange_address,
@@ -113,7 +114,7 @@ def HAY_exchange(w3, exchange_abi, factory, HAY_token):
 
 @pytest.fixture
 def DEN_exchange(w3, exchange_abi, factory, DEN_token):
-    factory.createExchange(DEN_token.address, transact={})
+    factory.createExchange(DEN_token.address, 30, 100, transact={})
     exchange_address = factory.getExchange(DEN_token.address)
     exchange = ConciseContract(w3.eth.contract(
         address=exchange_address,
@@ -147,3 +148,35 @@ def assert_fail():
         with raises(Exception):
             func()
     return assert_fail
+
+@pytest.fixture
+def YUT_token(w3):
+    deploy = create_contract(w3, 'contracts/test_contracts/ERC20.vy')
+    tx_hash = deploy.constructor(b'YUT Token', b'YUT', 18, 100000*10**18).transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    return ConciseContract(w3.eth.contract(
+        address=tx_receipt.contractAddress,
+        abi=deploy.abi
+    ))
+
+@pytest.fixture
+def YUT_exchange(w3, exchange_abi, factory, YUT_token):
+    factory.createExchange(YUT_token.address, 30, 200, transact={})
+    exchange_address = factory.getExchange(YUT_token.address)
+    exchange = ConciseContract(w3.eth.contract(
+        address=exchange_address,
+        abi=exchange_abi
+    ))
+    YUT_token.approve(exchange_address, YUT_RESERVE, transact={})
+    exchange.addLiquidity(0, YUT_RESERVE, DEADLINE, transact={'value': ETH_RESERVE})
+    return exchange
+    
+@pytest.fixture
+def HAY_token(w3):
+    deploy = create_contract(w3, 'contracts/test_contracts/ERC20.vy')
+    tx_hash = deploy.constructor(b'HAY Token', b'HAY', 18, 100000*10**18).transact()
+    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+    return ConciseContract(w3.eth.contract(
+        address=tx_receipt.contractAddress,
+        abi=deploy.abi
+    ))
